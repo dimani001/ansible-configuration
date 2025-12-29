@@ -1,0 +1,5 @@
+---
+load_balancer_is_required: true        # set to true to enable LB tasks
+enable_nginx_lb: true                  # enable Nginx LB
+enable_apache_lb: false                # disable Apache LB
+

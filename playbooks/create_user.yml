@@ -1,0 +1,14 @@
+---
+- name: Create 'ansible_deployer' user on web servers
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Create user 'ansible_deployer'
+      ansible.builtin.user:
+        name: ansible_deployer
+        comment: "Ansible Deployment User"
+        shell: /bin/bash
+        state: present
+        create_home: yes
+        groups: wheel # This grants sudo permission on RHEL systems
+        append: yes

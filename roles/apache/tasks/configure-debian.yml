@@ -1,0 +1,31 @@
+# Enable required Apache modules for load balancing
+- name: Enable Apache modules
+  ansible.builtin.shell:
+    cmd: "a2enmod {{ item }}"
+  loop:
+    - rewrite
+    - proxy
+    - proxy_balancer
+    - proxy_http
+    - headers
+    - lbmethod_bytraffic
+    - lbmethod_byrequests
+  notify: restart apache
+  become: yes
+
+# Insert load balancer configuration into Apache virtual host
+- name: Insert load balancer configuration into Apache virtual host
+  ansible.builtin.blockinfile:
+    path: /etc/apache2/sites-available/000-default.conf
+    block: |
+      <Proxy "balancer://mycluster">
+        BalancerMember http://10.0.1.58:80
+        BalancerMember http://10.0.1.227 :80
+        ProxySet lbmethod=byrequests
+      </Proxy>
+      ProxyPass "/" "balancer://mycluster/"
+      ProxyPassReverse "/" "balancer://mycluster/"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    insertbefore: "</VirtualHost>"
+  notify: restart apache
+  become: yes

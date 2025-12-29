@@ -1,0 +1,11 @@
+mysql_root_password: admin
+mysql_databases:
+  - name: tooling_db
+    encoding: latin1
+    collation: latin1_general_ci
+mysql_users:
+  - name: myuser
+    host: "10.0.1.0/24"   # your UAT webservers subnet
+    password: password
+    priv: "tooling_db.*:ALL"
+

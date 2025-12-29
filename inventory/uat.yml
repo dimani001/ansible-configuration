@@ -1,0 +1,10 @@
+
+[uat-webservers]
+10.0.1.58 ansible_ssh_user='ec2-user'
+10.0.1.227 ansible_ssh_user='ec2-user'
+
+[lb]
+10.0.1.127 ansible_ssh_user=ubuntu
+
+[db-servers]
+10.0.1.48 ansible_ssh_user=ubuntu
