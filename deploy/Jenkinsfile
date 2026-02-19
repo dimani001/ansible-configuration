@@ -1,45 +1,53 @@
 pipeline {
     agent any
 
+    parameters {
+      string(name: 'inventory', defaultValue: 'dev', description: 'This is the inventory file for the environment to deploy configuration')
+    }
+
+    environment {
+      ANSIBLE_CONFIG = "${WORKSPACE}/deploy/.ansible.cfg"
+    }
+
     stages {
-        stage('Build') {
-            steps {
-                script {
-                    sh 'echo "Building Stage"'
-                }
-            }
-        }
 
-        stage('Test') {
-            steps {
-                script {
-                    sh 'echo "Testing Stage"'
-                }
-            }
+      stage('Initial Cleanup') {
+        steps {
+          dir("${WORKSPACE}") {
+            deleteDir()
+          }
         }
+      }
 
-        stage('Package') {
-            steps {
-                script {
-                    sh 'echo "Packaging Application"'
-                }
-            }
+      stage('Checkout SCM') {
+        steps {
+          git branch: 'main', url: 'https://github.com/dimani001/ansible-configuration.git'
         }
+      }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    sh 'echo "Deploying Application"'
-                }
-            }
+      stage('Prepare Ansible For Execution') {
+        steps {
+          sh 'echo ${WORKSPACE}'
+          sh 'sed -i "3 a roles_path=${WORKSPACE}/roles" ${WORKSPACE}/deploy/.ansible.cfg'
         }
+      }
 
-        stage('Clean up') {
-            steps {
-                script {
-                    sh 'echo "Cleaning up resources"'
-                }
-            }
+      stage('Run Ansible playbook') {
+        steps {
+          ansiblePlaybook become: true,
+            credentialsId: 'private-key',
+            disableHostKeyChecking: true,
+            installation: 'ansible',
+            inventory: "${WORKSPACE}/inventory/${inventory}",
+            playbook: "${WORKSPACE}/playbooks/site.yml"
         }
+      }
+
+      stage('Clean Workspace after build') {
+        steps {
+          cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenUnstable: true, deleteDirs: true)
+        }
+      }
+
     }
 }

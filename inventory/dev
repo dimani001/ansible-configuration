@@ -1,0 +1,12 @@
+[todo]
+10.0.1.154 ansible_ssh_user=ubuntu
+
+[nginx]
+10.0.1.153 ansible_ssh_user=ubuntu
+
+[db:vars]
+ansible_user=ubuntu
+ansible_python_interpreter=/usr/bin/python3
+
+[db]
+10.0.1.132 ansible_ssh_user=ubuntu
