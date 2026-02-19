@@ -1,22 +1,44 @@
 ---
-- name: update web, nfs  servers
-  hosts: webservers, nfs
-  remote_user: ec2-user
-  become: yes
-  become_user: root
-  tasks:
-    - name: ensure wireshark is at the latest version using yum
-      yum:
-        name: wireshark
-        state: latest
-
-- name: update LB, db server
-  hosts: lb, db
+- name: update tooling server
+  hosts: tooling
   remote_user: ubuntu
   become: yes
   become_user: root
   tasks:
-    - name: ensure wireshark is at the latest version using apt
+    - name: ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+
+- name: update todo server
+  hosts: todo
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  tasks:
+    - name: ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+
+- name: update nginx server
+  hosts: nginx
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  tasks:
+    - name: ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+
+- name: update db server
+  hosts: db
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  tasks:
+    - name: ensure wireshark is at the latest version
       apt:
         name: wireshark
         state: latest
