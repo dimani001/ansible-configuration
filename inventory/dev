@@ -14,5 +14,3 @@ ansible_python_interpreter=/usr/bin/python
 
 [db]
 10.0.1.48 ansible_ssh_user=ec2-user
-
-

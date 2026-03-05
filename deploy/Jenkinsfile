@@ -35,18 +35,20 @@ pipeline {
       }
 
       stage('Run Ansible playbook') {
-        steps {
-          ansiblePlaybook(
-            become: true,
-            credentialsId: 'private-key',
-            disableHostKeyChecking: true,
-            installation: 'ansible',
-            inventory: "${WORKSPACE}/inventory/${params.inventory}",
-            playbook: "${WORKSPACE}/playbooks/site.yml",
-            tags: "${params.ansible_tags}"
-          )
-        }
-      }
+  steps {
+    sshagent(['private-key', 'private-key-redhat']) {
+      ansiblePlaybook(
+        become: true,
+        credentialsId: 'private-key',
+        disableHostKeyChecking: true,
+        installation: 'ansible',
+        inventory: "${WORKSPACE}/inventory/${params.inventory}",
+        playbook: "${WORKSPACE}/playbooks/site.yml",
+        tags: "${params.ansible_tags}"
+      )
+    }
+  }
+}
 
       stage('Clean Workspace after build') {
         steps {
