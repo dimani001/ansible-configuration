@@ -3,10 +3,12 @@ pipeline {
 
     parameters {
       string(name: 'inventory', defaultValue: 'dev', description: 'This is the inventory file for the environment to deploy configuration')
+      string(name: 'ansible_tags', defaultValue: 'webserver', description: 'Ansible tags to run specific roles or tasks')
     }
 
     environment {
-      ANSIBLE_CONFIG = "${WORKSPACE}/deploy/.ansible.cfg"
+      ANSIBLE_CONFIG = "${WORKSPACE}/deploy/ansible.cfg"
+      ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
 
     stages {
@@ -28,18 +30,21 @@ pipeline {
       stage('Prepare Ansible For Execution') {
         steps {
           sh 'echo ${WORKSPACE}'
-          sh 'sed -i "3 a roles_path=${WORKSPACE}/roles" ${WORKSPACE}/deploy/.ansible.cfg'
+          sh 'sed -i "3 a roles_path=${WORKSPACE}/roles" ${WORKSPACE}/deploy/ansible.cfg'
         }
       }
 
       stage('Run Ansible playbook') {
         steps {
-          ansiblePlaybook become: true,
-            credentialsId: '29b822eb-48ee-42a4-8953-7fcf8f42ba2e-private-key',
+          ansiblePlaybook(
+            become: true,
+            credentialsId: 'private-key',
             disableHostKeyChecking: true,
             installation: 'ansible',
             inventory: "${WORKSPACE}/inventory/${params.inventory}",
-            playbook: "${WORKSPACE}/playbooks/site.yml"
+            playbook: "${WORKSPACE}/playbooks/site.yml",
+            tags: "${params.ansible_tags}"
+          )
         }
       }
 

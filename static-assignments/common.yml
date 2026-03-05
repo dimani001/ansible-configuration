@@ -1,14 +1,16 @@
 ---
-- name: update tooling server
+- name: update web servers
   hosts: tooling
-  remote_user: ubuntu
+  remote_user: ec2-user
   become: yes
   become_user: root
   tasks:
     - name: ensure wireshark is at the latest version
-      apt:
+      yum:
         name: wireshark
         state: latest
+      tags:
+        - webserver
 
 - name: update todo server
   hosts: todo
@@ -20,6 +22,8 @@
       apt:
         name: wireshark
         state: latest
+      tags:
+        - todo
 
 - name: update nginx server
   hosts: nginx
@@ -31,14 +35,18 @@
       apt:
         name: wireshark
         state: latest
+      tags:
+        - nginx
 
 - name: update db server
   hosts: db
-  remote_user: ubuntu
+  remote_user: ec2-user
   become: yes
   become_user: root
   tasks:
     - name: ensure wireshark is at the latest version
-      apt:
+      yum:
         name: wireshark
         state: latest
+      tags:
+        - db

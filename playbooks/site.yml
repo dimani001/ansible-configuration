@@ -7,18 +7,6 @@
       tags:
         - always
 
-# - import_playbook: ../static-assignments/db-servers.yml
-#   tags:
-#     - db
-
-# - import_playbook: ../static-assignments/uat-webservers.yml
-#   tags:
-#     - webserver
-
-# - import_playbook: ../static-assignments/loadbalancers.yml
-#   tags:
-#     - loadbalancer
-
 - import_playbook: ../static-assignments/common.yml
   tags:
     - common

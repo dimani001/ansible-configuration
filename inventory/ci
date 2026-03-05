@@ -1,0 +1,11 @@
+[jenkins]
+10.0.1.63 ansible_ssh_user=ubuntu
+
+[nginx]
+10.0.1.153 ansible_ssh_user=ubuntu
+
+[sonarqube]
+10.0.1.82 ansible_ssh_user=ubuntu
+
+[artifact_repository]
+10.0.1.218 ansible_ssh_user=ubuntu
