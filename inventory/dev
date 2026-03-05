@@ -9,7 +9,8 @@
 10.0.1.153 ansible_user=ubuntu
 
 [db]
-10.0.1.48 ansible_user=ec2-user
+10.0.1.48 ansible_user=ubuntu
+
 
 [db:vars]
 ansible_python_interpreter=/usr/bin/python3
