@@ -5,10 +5,12 @@
   become: yes
   become_user: root
   tasks:
-    - name: ensure wireshark is at the latest version
+    - name: ensure Wireshark is at the latest version
       yum:
         name: wireshark
         state: latest
+      async: 600      # prevents memory crashes
+      poll: 0
       tags:
         - webserver
 
@@ -18,10 +20,12 @@
   become: yes
   become_user: root
   tasks:
-    - name: ensure wireshark is at the latest version
+    - name: ensure Wireshark is at the latest version
       apt:
         name: wireshark
         state: latest
+        force: yes
+        install_recommends: no
       tags:
         - todo
 
@@ -31,22 +35,27 @@
   become: yes
   become_user: root
   tasks:
-    - name: ensure wireshark is at the latest version
+    - name: ensure Wireshark is at the latest version
       apt:
         name: wireshark
         state: latest
+        force: yes
+        install_recommends: no
       tags:
         - nginx
 
 - name: update db server
   hosts: db
-  remote_user: ec2-user
+  remote_user: ubuntu        # fixed username for DB
   become: yes
   become_user: root
   tasks:
-    - name: ensure wireshark is at the latest version
-      yum:
+    - name: ensure Wireshark is at the latest version
+      apt:
         name: wireshark
         state: latest
+        force: yes
+        install_recommends: no
       tags:
         - db
+
