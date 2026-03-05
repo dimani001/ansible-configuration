@@ -10,3 +10,7 @@
 - import_playbook: ../static-assignments/common.yml
   tags:
     - common
+
+- import_playbook: ../static-assignments/artifactory.yml
+  tags:
+    - artifactory
