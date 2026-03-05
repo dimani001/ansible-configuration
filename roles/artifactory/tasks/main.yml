@@ -1,13 +1,27 @@
 ---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Java 11
+  apt:
+    name: openjdk-11-jdk
+    state: present
+
 - name: Install required dependencies
   apt:
     name:
       - wget
       - curl
-      - apt-transport-https
       - gnupg
     state: present
-    update_cache: yes
+
+- name: Create artifactory user
+  user:
+    name: artifactory
+    system: yes
+    shell: /bin/false
+    create_home: no
 
 - name: Add JFrog GPG key
   apt_key:
@@ -16,9 +30,9 @@
 
 - name: Add JFrog repository
   apt_repository:
-    repo: deb https://releases.jfrog.io/artifactory/artifactory-debs xenial main
+    repo: deb https://releases.jfrog.io/artifactory/artifactory-debs focal main
     state: present
-    filename: artifactory
+    filename: jfrog
 
 - name: Install Artifactory
   apt:
@@ -26,14 +40,21 @@
     state: present
     update_cache: yes
 
-- name: Start and enable Artifactory service
+- name: Configure JVM memory
+  lineinfile:
+    path: /opt/jfrog/artifactory/var/etc/system.yaml
+    line: 'shared.node.primary: true'
+    create: yes
+
+- name: Start and enable Artifactory
   systemd:
     name: artifactory
     state: started
     enabled: yes
+    daemon_reload: yes
 
 - name: Wait for Artifactory to start
   wait_for:
     port: 8081
-    delay: 10
+    delay: 30
     timeout: 300
